@@ -6,10 +6,9 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
   pull_request:
     branches: [ main ]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -54,9 +53,10 @@ jobs:
           pip install pytest-cov
           python -m pytest --doctest-modules --ignore=main.py --cov
 
-  deploy:
+  deploy-main:
     needs: test
     runs-on: ubuntu-latest
+    if: ${{ github.ref_name == 'main' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -65,4 +65,18 @@ jobs:
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "examblancmain"
+          heroku_email: "cedellec21@excelia-group.com"
+
+  deploy-develop:
+    needs: test
+    runs-on: ubuntu-latest
+    if: ${{ github.ref_name == 'develop' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "examblancdevelop"
           heroku_email: "cedellec21@excelia-group.com"
