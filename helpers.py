@@ -1,6 +1,6 @@
 def hello():
     """
     >>> hello()
-    'Hello World!'
+    'Hello Main!'
     """
-    return "Hello World!"
+    return "Hello Main!"
